@@ -6,7 +6,7 @@ POST http://localhost:3000/players/
 
 ###
 
-GET http://localhost:3000/players/1/
+GET http://localhost:3000/players/2/
 
 ###
 
