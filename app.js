@@ -29,14 +29,14 @@ const initializeDBAndServer = async () => {
 
 initializeDBAndServer();
 
-const convertDbObjectToResponseObject = (dbObject) => {
+function convertDbObjectToResponseObject(dbObject) {
   return {
     playerId: dbObject.player_id,
     playerName: dbObject.player_name,
     jerseyNumber: dbObject.jersey_number,
     role: dbObject.role,
   };
-};
+}
 
 //get all players
 app.get("/players/", async (request, response) => {
@@ -44,8 +44,8 @@ app.get("/players/", async (request, response) => {
     SELECT 
     *
     FROM
-    cricket_team
-    ;`;
+    cricket_team;
+    `;
   const playersList = await db.all(getPlayersQuery);
 
   const convertedPlayerList = [];
@@ -67,10 +67,11 @@ app.post("/players/", async (request, response) => {
         cricket_team (player_name, jersey_number, role)
     VALUES
     (
-        ${playerName},
+        '${playerName}',
         ${jerseyNumber},
-        ${role}
-    );`;
+        '${role}'
+    );
+    `;
   const addedPlayerResponse = await db.run(addPlayerDetailsQuery);
   response.send("Player Added to Team");
 });
@@ -84,8 +85,8 @@ app.get("/players/:playerId/", async (request, response) => {
     FROM
         cricket_team
     WHERE
-        player_id = ${playerId}
-    ;`;
+        player_id = ${playerId};
+    `;
   const player = await db.get(getPlayerQuery);
   response.send(convertDbObjectToResponseObject(player));
 });
@@ -100,15 +101,17 @@ app.put("/players/:playerId/", async (request, response) => {
     UPDATE
         cricket_team
     SET
-        player_name = ${playerName},
+        player_name = '${playerName}',
         jersey_number = ${jerseyNumber},
-        role = ${role}
+        role = '${role}'
     WHERE
         player_id = ${playerId}
     ;`;
   await db.run(playerDetailsQuery);
   response.send("Player Details Updated");
 });
+
+// Delete the player
 
 app.delete("/players/:playerId/", async (request, response) => {
   const { playerId } = request.params;
